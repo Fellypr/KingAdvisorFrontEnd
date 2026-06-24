@@ -1,63 +1,51 @@
-import Image from "next/image";
+import Navbar from "@/components/navbar";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div>
+      <main>
+        <header className="absolute z-50
+          w-full flex justify-center items-center
+          bg-transparent shadow-sm shadow-black/12">
+          <Navbar />
+        </header>
+        <div className="absolute w-full h-screen">
+          <video className="w-full h-screen object-cover" src="/video/Apresentacao.mp4" autoPlay loop muted playsInline></video>
+          <div className="absolute inset-0 bg-black/50"></div>
+          <div className="absolute w-150 gap-5 flex flex-col" style={{ marginTop: '-25%', marginLeft: '30px' }}>
+            <img src="/Texto/nome-king-adivisor.png" alt="" className="max-sm:w-3/5 max-md:w-3/5 max-lg:w-3/6" />
+            <h3 className="text-gray-200 text-1xl max-sm:text-xl max-md:text-xl max-lg:text-2xl pl-3">Descubra os decks mais fortes do meta, analise suas cartas e encontre combinações que aumentam sua taxa de vitória.</h3>
+
+            <button
+              className="flex justify-center items-center gap-2.5 px-4 py-2 rounded-lg cursor-pointer w-[300px] active:translate-y-0.5 transition-transform hover:cursor-pointer hover:scale-102 ml-2"
+              style={{
+                background: "linear-gradient(180deg, #f5c842 0%, #e8970a 60%, #c97b00 100%)",
+                border: "2px solid #a35e00",
+                boxShadow: "0 3px 0 #7a3f00, inset 0 1px 0 rgba(255,255,255,0.3)",
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+              <svg className="w-9 h-9 shrink-0" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="17" fill="#b05f00" stroke="#7a3f00" strokeWidth="1.5" />
+                <circle cx="18" cy="18" r="14" fill="#cc6e00" />
+                <polygon points="18,8 21,15 29,15 23,20 25,28 18,23 11,28 13,20 7,15 15,15"
+                  fill="#ffe066" stroke="#c97b00" strokeWidth="0.8" />
+              </svg>
+
+
+              <div className="flex flex-col flex-1 leading-tight">
+                <span className="text-[9px] font-bold tracking-widest uppercase" style={{ color: "#7a3f00" }}>
+                  Clash Royale
+                </span>
+                <span className="text-base font-black text-white" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}>
+                  Analisar seu Deck
+                </span>
+              </div>
+
+
+              <span className="text-xl font-black text-white mt-2" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>›</span>
+            </button>
+          </div>
         </div>
       </main>
     </div>
