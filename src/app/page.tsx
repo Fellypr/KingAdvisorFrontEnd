@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar";
+import { ListCard } from "@/features/decks-metas";
 
 export default function Home() {
   return (
@@ -6,15 +7,15 @@ export default function Home() {
       <main>
         <header className="absolute z-50
           w-full flex justify-center items-center
-          bg-transparent shadow-sm shadow-black/12">
+          bg-transparent">
           <Navbar />
         </header>
-        <div className="absolute w-full h-screen">
+        <div className="relative w-full h-screen">
           <video className="w-full h-screen object-cover" src="/video/Apresentacao.mp4" autoPlay loop muted playsInline></video>
           <div className="absolute inset-0 bg-black/50"></div>
-          <div className="absolute w-150 gap-5 flex flex-col" style={{ marginTop: '-25%', marginLeft: '30px' }}>
-            <img src="/Texto/nome-king-adivisor.png" alt="" className="max-sm:w-3/5 max-md:w-3/5 max-lg:w-3/6" />
-            <h3 className="text-gray-200 text-1xl max-sm:text-xl max-md:text-xl max-lg:text-2xl pl-3">Descubra os decks mais fortes do meta, analise suas cartas e encontre combinações que aumentam sua taxa de vitória.</h3>
+          <div className="absolute w-150 gap-5 flex flex-col" style={{ marginTop: '-33%', marginLeft: '30px' }}>
+            <img src="/Texto/nome-king-adivisor.png" alt="" className="w-3/4" />
+            <h3 className="text-gray-200 text-[15px] pl-3">Descubra os decks mais fortes do meta, analise suas cartas e encontre combinações que aumentam sua taxa de vitória.</h3>
 
             <button
               className="flex justify-center items-center gap-2.5 px-4 py-2 rounded-lg cursor-pointer w-[300px] active:translate-y-0.5 transition-transform hover:cursor-pointer hover:scale-102 ml-2"
@@ -46,7 +47,17 @@ export default function Home() {
               <span className="text-xl font-black text-white mt-2" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}>›</span>
             </button>
           </div>
+          <img src="/divisores/BruxaComPrincipeSemFundo.png" alt="" className="w-full absolute bottom-[-9%] z-20" />
         </div>
+        <section className="w-full min-h-screen z-10 bg-[url(/images/fundo_de_madeira_1.png)] bg-repeat bg-auto pt-30 pb-20 pl-10 pr-10">
+          <h1 className="bg-gradient-to-r from-[#F5C842] to-[#DEAC18] to-[#8F7527] bg-clip-text text-transparent text-5xl tracking-wider">DECKS DO META 84°</h1>
+          <ListCard/>
+          <ListCard/>
+          <ListCard/>
+          <ListCard/>
+          <ListCard/>
+          <ListCard/>
+        </section>
       </main>
     </div>
   );
