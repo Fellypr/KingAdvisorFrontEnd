@@ -1,4 +1,4 @@
-const BASE_URL = ""
+const BASE_URL = "http://localhost:5087"
 
 export async function apiDecksMetas<T>(endpoint: string, options?: RequestInit): Promise<T>{
     const response = await fetch(`${BASE_URL}${endpoint}`,{

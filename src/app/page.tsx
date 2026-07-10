@@ -60,11 +60,6 @@ export default function Home() {
           </h1>
           <div className="flex flex-col gap-6 mt-10 w-full max-w-6xl mx-auto">
             <ListCard/>
-            <ListCard/>
-            <ListCard/>
-            <ListCard/>
-            <ListCard/>
-            <ListCard/>
           </div>
         </section>
         <Footer/>

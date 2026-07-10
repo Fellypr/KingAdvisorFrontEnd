@@ -21,6 +21,8 @@ export interface DeckMeta {
   idDocumento?: string; 
   id: number;
   name: string;
-  card_slugs: Record<string, CardDetails[]>[]; 
+  cardSlugs: Record<string, CardDetails[]>[]; 
   averageElixir: number;
+  everageWin:string;
+  strategy:string;
 }

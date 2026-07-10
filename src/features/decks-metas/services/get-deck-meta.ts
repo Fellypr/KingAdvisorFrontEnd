@@ -4,6 +4,6 @@ import {apiDecksMetas} from "../services/api"
 export const getAllDecksMetasServices = {
 
     getAll: async() : Promise<DeckMeta[]> => {
-        return apiDecksMetas<DeckMeta[]>("",{next: {revalidate:3600}})
+        return apiDecksMetas<DeckMeta[]>("/DecksMeta/get-deck-meta",{next: {revalidate:3600}})
     }
 }
