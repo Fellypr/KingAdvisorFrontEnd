@@ -24,8 +24,6 @@ export function ListCard() {
         }else{
             return "imagem não encontrada"
         }   
-
-        // return card.iconUrls.evolutionMedium ?? card.iconUrls.heroMedium ?? card.iconUrls.medium ?? "/images/carta.png";
     };
 
     if (loading) {

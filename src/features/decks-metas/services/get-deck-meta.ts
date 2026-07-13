@@ -1,5 +1,5 @@
 import {DeckMeta} from "@/features/decks-metas/types/decks-meta"
-import {apiDecksMetas} from "../services/api"
+import {apiDecksMetas} from "../../api"
 
 export const getAllDecksMetasServices = {
 
