@@ -32,7 +32,7 @@ export function Cards() {
   const [cartaSelecionada, setCartaSelecionada] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const {cards,getImagemCard} = useCards()
-  const {addingCardInDeck} = useCreateDeck();
+  const {addingCardInDeck, deck} = useCreateDeck();
 
   useEffect(() => {
     function handleClickFora(event: MouseEvent) {
@@ -56,60 +56,71 @@ export function Cards() {
       ref={containerRef}
       className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-8 w-full h-full flex-wrap overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-amber-300 [&::-webkit-scrollbar-track]:bg-gray-900 [&::-webkit-scrollbar-thumb:hover]:bg-amber-500 [&::-webkit-scrollbar-thumb]:rounded-2x gap-y-4"
     >
-    {cards.map((item) => (
-      <div 
-        key={item.id} 
-        onClick={() => setCartaSelecionada(item.id)}
-        className={`flex flex-col items-center justify-center p-1 pb-2 rounded-xl w-17.5 sm:w-30 cursor-pointer transition-all duration-300 ease-out transform-gpu ${
-          cartaSelecionada === item.id
-            ? "bg-slate-950/70 shadow-lg shadow-blue-500/30 scale-[1.03]"
-            : "bg-transparent hover:bg-blue-500/10 hover:scale-[1.01]"
-        }`}
-      >
-        <div className="relative">
-          {cartaSelecionada === item.id && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 rounded-md"
-              style={getCardBorderStyle(item.rarity)}
-            />
-          )}
-          <div className='w-4 top-2 sm:w-6 absolute z-1 sm:top-4'>
-            <img src="/images/elixir.png" alt="" className="" />
-            <span className='absolute bottom-0 left-1.5 sm:left-2 text-gray-100 text-[12px] sm:text-[16px] z-2'>{item.elixirCost}</span>
-          </div>
-          <img
-            src={getImagemCard(item)}
-            alt=""
-            className={`relative w-15 h-22.5 sm:w-22.5 sm:h-37.5 md:w-27.5 md:h-38.75 rounded-md transition-transform duration-300 ease-out ${
-              cartaSelecionada === item.id ? "-translate-y-1" : ""
-            }`}
-          />
-        </div>
+    {cards.map((item) => {
+      const cardAlreadyInDeck = deck.some((card) => card.id === item.id);
+      const isDeckFull = deck.length >= 8;
+      const disableAddButton = cardAlreadyInDeck || isDeckFull;
 
-        <div
-          className={`w-full overflow-hidden transition-all duration-300 ease-out ${
+      return (
+        <div 
+          key={item.id} 
+          onClick={() => setCartaSelecionada(item.id)}
+          className={`flex flex-col items-center justify-center p-1 pb-2 rounded-xl w-17.5 sm:w-30 cursor-pointer transition-all duration-300 ease-out transform-gpu ${
             cartaSelecionada === item.id
-              ? "max-h-20 opacity-100 mt-0.5"
-              : "max-h-0 opacity-0 mt-0"
+              ? "bg-slate-950/70 shadow-lg shadow-blue-500/30 scale-[1.03]"
+              : "bg-transparent hover:bg-blue-500/10 hover:scale-[1.01]"
           }`}
         >
-          <button 
-            onClick={(e) => {
-              e.stopPropagation(); 
-              addingCardInDeck(item, e);
-            }}
-            className={`text-[12px] bg-linear-to-t from-[#D49F00] via-[#DEAC18] to-[#FFC619] w-full p-1 pt-2 rounded-md transition-all duration-300 ease-out cursor-pointer ${
+          <div className="relative">
+            {cartaSelecionada === item.id && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 rounded-md"
+                style={getCardBorderStyle(item.rarity)}
+              />
+            )}
+            <div className='w-4 top-2 sm:w-6 absolute z-1 sm:top-4'>
+              <img src="/images/elixir.png" alt="" className="" />
+              <span className='absolute bottom-0 left-1.5 sm:left-2 text-gray-100 text-[12px] sm:text-[16px] z-2'>{item.elixirCost}</span>
+            </div>
+            <img
+              src={getImagemCard(item)}
+              alt=""
+              className={`relative w-15 h-22.5 sm:w-22.5 sm:h-37.5 md:w-27.5 md:h-38.75 rounded-md transition-transform duration-300 ease-out ${
+                cartaSelecionada === item.id ? "-translate-y-1" : ""
+              }`}
+            />
+          </div>
+
+          <div
+            className={`w-full overflow-hidden transition-all duration-300 ease-out ${
               cartaSelecionada === item.id
-                ? "translate-y-0 scale-100"
-                : "-translate-y-2 scale-95"
+                ? "max-h-20 opacity-100 mt-0.5"
+                : "max-h-0 opacity-0 mt-0"
             }`}
           >
-            Adicionar
-          </button>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation(); 
+                addingCardInDeck(item, e);
+              }}
+              disabled={disableAddButton}
+              className={`text-[12px] w-full p-1 pt-2 rounded-md transition-all duration-300 ease-out ${
+                disableAddButton
+                  ? "cursor-not-allowed bg-slate-500/80 text-white/90"
+                  : "cursor-pointer bg-linear-to-t from-[#D49F00] via-[#DEAC18] to-[#FFC619]"
+              } ${
+                cartaSelecionada === item.id
+                  ? "translate-y-0 scale-100"
+                  : "-translate-y-2 scale-95"
+              }`}
+            >
+              {cardAlreadyInDeck ? "Ja no deck" : isDeckFull ? "Deck cheio" : "Adicionar"}
+            </button>
+          </div>
         </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
   );
 }

@@ -34,7 +34,6 @@ export function AnalyzeDeckButton({
       `}
       {...props}
     >
-      {/* Reflexo superior */}
       <span
         aria-hidden="true"
         className="
