@@ -74,9 +74,9 @@ export function Cards() {
               style={getCardBorderStyle(item.rarity)}
             />
           )}
-          <div className='w-6 absolute z-1 top-4'>
+          <div className='w-4 top-2 sm:w-6 absolute z-1 sm:top-4'>
             <img src="/images/elixir.png" alt="" className="" />
-            <span className='absolute bottom-0 left-2 text-gray-100'>{item.elixirCost}</span>
+            <span className='absolute bottom-0 left-1.5 sm:left-2 text-gray-100 text-[12px] sm:text-[16px] z-2'>{item.elixirCost}</span>
           </div>
           <img
             src={getImagemCard(item)}
