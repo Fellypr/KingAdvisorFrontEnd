@@ -9,6 +9,8 @@ import {
   useState,
   type MouseEvent,
   type ReactNode,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { useCards } from "./useCards";
 import type { Card } from "../types/cardsTypes";
@@ -18,12 +20,15 @@ type DeckContextData = {
   removeCardFromDeck: (cardIndex: number) => void;
   rulePositionCard: (index :number ,item: Card) => void
   deck: Card[];
+  cardSelect: number | null;
+  setCardSelect: Dispatch<SetStateAction<number | null>>
 };
 
 const DeckContext = createContext<DeckContextData | null>(null);
 
 export function CreateDeckProvider({ children }: { children: ReactNode }) {
   const [deck, setDeck] = useState<Card[]>([]);
+  const [cardSelect , setCardSelect] = useState<number | null>(null);
   const { cards } = useCards();
 
   const addingCardInDeck = (card?: Card, e?: MouseEvent) => {
@@ -71,6 +76,8 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
 
   }
 
+  
+
   useEffect(() => {
     console.log("por enquanto o deck estar assim", deck);
   }, [deck]);
@@ -81,8 +88,10 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
       removeCardFromDeck,
       deck,
       rulePositionCard,
+      cardSelect,
+      setCardSelect
     }),
-    [deck]
+    [deck,cardSelect]
   );
 
   return createElement(DeckContext.Provider, { value }, children);
