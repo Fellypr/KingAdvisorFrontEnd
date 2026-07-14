@@ -3,6 +3,7 @@
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import {useCards} from "../hook/useCards"
+import {useCreateDeck} from "../hook/useDeckWithCards"
 
 const CARD_GRADIENTS: Record<string, string> = {
   common:
@@ -16,7 +17,6 @@ const CARD_GRADIENTS: Record<string, string> = {
   champion:
     "linear-gradient(146deg, rgba(255, 253, 148, 1) 0%, rgba(250, 204, 0, 1) 55%, rgba(196, 160, 0, 1) 87%)",
 };
-
 function getCardBorderStyle(rarity: string): CSSProperties {
   return {
     backgroundImage: CARD_GRADIENTS[rarity] ?? CARD_GRADIENTS.common,
@@ -32,6 +32,7 @@ export function Cards() {
   const [cartaSelecionada, setCartaSelecionada] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const {cards,getImagemCard} = useCards()
+  const {addingCardInDeck} = useCreateDeck();
 
   useEffect(() => {
     function handleClickFora(event: MouseEvent) {
@@ -49,7 +50,6 @@ export function Cards() {
       document.removeEventListener('mousedown', handleClickFora);
     };
   }, []);
-  console.log(cards);
   
   return (
     <div
@@ -97,9 +97,9 @@ export function Cards() {
           <button 
             onClick={(e) => {
               e.stopPropagation(); 
-              console.log("Adicionado à mochila/carrinho!");
+              addingCardInDeck(item, e);
             }}
-            className={`text-[12px] bg-linear-to-t from-[#D49F00] via-[#DEAC18] to-[#FFC619] w-full p-1 pt-2 rounded-md transition-all duration-300 ease-out ${
+            className={`text-[12px] bg-linear-to-t from-[#D49F00] via-[#DEAC18] to-[#FFC619] w-full p-1 pt-2 rounded-md transition-all duration-300 ease-out cursor-pointer ${
               cartaSelecionada === item.id
                 ? "translate-y-0 scale-100"
                 : "-translate-y-2 scale-95"

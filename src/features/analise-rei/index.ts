@@ -1,3 +1,4 @@
 export {FilterCard} from "../analise-rei/component/filter-cards"
 export {Cards} from "../analise-rei/component/cards"
 export {AnalyzeDeckButton} from "../analise-rei/component/button"
+export {useCreateDeck} from "../analise-rei/hook/useDeckWithCards"

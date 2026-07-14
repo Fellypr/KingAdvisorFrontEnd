@@ -1,7 +1,9 @@
+"use client";
 import {AnalyzeDeckButton} from "@/features/analise-rei"
-
+import {useCreateDeck} from "@/features/analise-rei"
 export default function DeckUsuario() {
     const box = Array.from({ length: 8 })
+    const {deck} = useCreateDeck();
     return (
         <div className="h-auto w-full ">
             <div

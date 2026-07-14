@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { Card } from "../types/cardsTypes";
 import { getCardsServices } from "../services/get-cards";
