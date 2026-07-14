@@ -1,12 +1,37 @@
 'use client'
 
+import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import {useCards} from "../hook/useCards"
+
+const CARD_GRADIENTS: Record<string, string> = {
+  common:
+    "linear-gradient(90deg, rgba(0, 116, 189, 1) 0%, rgba(0, 160, 252, 1) 33%, rgba(0, 183, 255, 1) 63%, rgba(0, 164, 196, 1) 100%)",
+  rare:
+    "linear-gradient(90deg, rgba(255, 205, 97, 1) 0%, rgba(255, 175, 15, 1) 44%, rgba(204, 136, 0, 1) 81%)",
+  epic:
+    "linear-gradient(90deg, rgba(211, 112, 250, 1) 0%, rgba(195, 31, 255, 1) 47%, rgba(151, 0, 196, 1) 81%)",
+  legendary:
+    "linear-gradient(146deg, rgba(46, 242, 177, 1) 0%, rgba(214, 182, 227, 1) 47%, rgba(245, 0, 224, 1) 81%)",
+  champion:
+    "linear-gradient(146deg, rgba(255, 253, 148, 1) 0%, rgba(250, 204, 0, 1) 55%, rgba(196, 160, 0, 1) 87%)",
+};
+
+function getCardBorderStyle(rarity: string): CSSProperties {
+  return {
+    backgroundImage: CARD_GRADIENTS[rarity] ?? CARD_GRADIENTS.common,
+    padding: "2px",
+    WebkitMask:
+      "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+    WebkitMaskComposite: "xor",
+    maskComposite: "exclude",
+  };
+}
 
 export function Cards() {
   const [cartaSelecionada, setCartaSelecionada] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const {cards,getImagemCard,getTypeCard} = useCards()
+  const {cards,getImagemCard} = useCards()
 
   useEffect(() => {
     function handleClickFora(event: MouseEvent) {
@@ -37,17 +62,30 @@ export function Cards() {
         onClick={() => setCartaSelecionada(item.id)}
         className={`flex flex-col items-center justify-center p-1 pb-2 rounded-xl w-17.5 sm:w-30 cursor-pointer transition-all duration-300 ease-out transform-gpu ${
           cartaSelecionada === item.id
-            ? `${getTypeCard(item)} shadow-lg shadow-blue-500/30 scale-[1.03]`
+            ? "bg-slate-950/70 shadow-lg shadow-blue-500/30 scale-[1.03]"
             : "bg-transparent hover:bg-blue-500/10 hover:scale-[1.01]"
         }`}
       >
-        <img
-          src={getImagemCard(item)}
-          alt=""
-          className={`w-15 h-22.5 sm:w-22.5 sm:h-37.5 md:w-27.5 md:h-38.75 rounded-md transition-transform duration-300 ease-out ${
-            cartaSelecionada === item.id ? "-translate-y-1" : ""
-          }`}
-        />
+        <div className="relative">
+          {cartaSelecionada === item.id && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 rounded-md"
+              style={getCardBorderStyle(item.rarity)}
+            />
+          )}
+          <div className='w-6 absolute z-1 top-4'>
+            <img src="/images/elixir.png" alt="" className="" />
+            <span className='absolute bottom-0 left-2 text-gray-100'>{item.elixirCost}</span>
+          </div>
+          <img
+            src={getImagemCard(item)}
+            alt=""
+            className={`relative w-15 h-22.5 sm:w-22.5 sm:h-37.5 md:w-27.5 md:h-38.75 rounded-md transition-transform duration-300 ease-out ${
+              cartaSelecionada === item.id ? "-translate-y-1" : ""
+            }`}
+          />
+        </div>
 
         <div
           className={`w-full overflow-hidden transition-all duration-300 ease-out ${
