@@ -2,6 +2,8 @@
 import { useEffect,useRef } from "react";
 import { AnalyzeDeckButton } from "@/features/analise-rei";
 import { useCreateDeck } from "@/features/analise-rei";
+import { useDroppable } from "@dnd-kit/react";
+import { DECK_DROP_ID } from "@/features/analise-rei/hook/useDeckWithCards";
 export default function DeckUsuario() {
   const box = Array.from({ length: 8 });
   const {
@@ -12,6 +14,11 @@ export default function DeckUsuario() {
     setCardSelect,
   } = useCreateDeck();
   const containerRef = useRef(null);
+  const { ref: dropRef, isDropTarget } = useDroppable({
+    id: DECK_DROP_ID,
+    type: "deck",
+    accept: "card",
+  });
 
   useEffect(() => {
       function handleClickFora(event) {
@@ -34,7 +41,15 @@ export default function DeckUsuario() {
   return (
     <div className="h-auto w-full ">
       <div className="mx-auto w-full max-w-140 rounded-lg  p-4 sm:p-5 md:p-6">
-        <div ref={containerRef} className="grid grid-cols-4 gap-3 sm:grid-cols-4 sm:gap-4 md:gap-x-9 md:gap-y-6">
+        <div
+          ref={(node) => {
+            containerRef.current = node;
+            dropRef(node);
+          }}
+          className={`grid grid-cols-4 gap-3 rounded-xl transition-all duration-200 sm:grid-cols-4 sm:gap-4 md:gap-x-9 md:gap-y-6 ${
+            isDropTarget ? "bg-amber-300/10 ring-2 ring-amber-300" : ""
+          }`}
+        >
           {box.map((_, index) => (
             <div
               key={index}

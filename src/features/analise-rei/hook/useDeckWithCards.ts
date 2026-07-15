@@ -12,8 +12,15 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import { useCards } from "./useCards";
+import {
+  DragDropProvider,
+  DragOverlay,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/react";
 import type { Card } from "../types/cardsTypes";
+
+export const DECK_DROP_ID = "deck-drop-zone";
 
 type DeckContextData = {
   addingCardInDeck: (card?: Card, e?: MouseEvent) => void;
@@ -29,12 +36,12 @@ const DeckContext = createContext<DeckContextData | null>(null);
 export function CreateDeckProvider({ children }: { children: ReactNode }) {
   const [deck, setDeck] = useState<Card[]>([]);
   const [cardSelect , setCardSelect] = useState<number | null>(null);
-  const { cards } = useCards();
+  const [activeCard, setActiveCard] = useState<Card | null>(null);
 
   const addingCardInDeck = (card?: Card, e?: MouseEvent) => {
     e?.preventDefault();
 
-    const selectedCard = card ?? cards[0];
+    const selectedCard = card;
     if (!selectedCard) {
       return;
     }
@@ -76,7 +83,22 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
 
   }
 
-  
+  const handleDragStart = (event: DragStartEvent) => {
+    const card = event.operation.source?.data?.card;
+    setActiveCard(card ?? null);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { canceled, operation } = event;
+    const card = operation.source?.data?.card;
+    const wasDroppedOnDeck = operation.target?.id === DECK_DROP_ID;
+
+    if (!canceled && wasDroppedOnDeck && card) {
+      addingCardInDeck(card);
+    }
+
+    setActiveCard(null);
+  };
 
   useEffect(() => {
     console.log("por enquanto o deck estar assim", deck);
@@ -94,7 +116,26 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
     [deck,cardSelect]
   );
 
-  return createElement(DeckContext.Provider, { value }, children);
+  return createElement(
+    DeckContext.Provider,
+    { value },
+    createElement(
+      DragDropProvider,
+      { onDragStart: handleDragStart, onDragEnd: handleDragEnd },
+      children,
+      createElement(
+        DragOverlay,
+        null,
+        activeCard
+          ? createElement("img", {
+              src: activeCard.iconUrls.medium,
+              alt: activeCard.name,
+              className: "h-30 w-20 rounded-lg object-cover shadow-2xl",
+            })
+          : null
+      )
+    )
+  );
 }
 
 export function useCreateDeck() {
