@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   createElement,
   createContext,
   useContext,
@@ -26,7 +27,7 @@ type DeckContextData = {
   addingCardInDeck: (card?: Card, e?: MouseEvent) => void;
   removeCardFromDeck: (cardIndex: number) => void;
   rulePositionCard: (index :number ,item: Card) => void
-  deck: Card[];
+  deck: Array<Card | undefined>;
   cardSelect: number | null;
   setCardSelect: Dispatch<SetStateAction<number | null>>
 };
@@ -34,11 +35,13 @@ type DeckContextData = {
 const DeckContext = createContext<DeckContextData | null>(null);
 
 export function CreateDeckProvider({ children }: { children: ReactNode }) {
-  const [deck, setDeck] = useState<Card[]>([]);
+  const [deck, setDeck] = useState<Array<Card | undefined>>(
+    Array.from({ length: 8 }, () => undefined)
+  );
   const [cardSelect , setCardSelect] = useState<number | null>(null);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
 
-  const addingCardInDeck = (card?: Card, e?: MouseEvent) => {
+  const addingCardInDeck = useCallback((card?: Card, e?: MouseEvent) => {
     e?.preventDefault();
 
     const selectedCard = card;
@@ -47,28 +50,47 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
     }
 
     setDeck((currentDeck) => {
-      if (currentDeck.length >= 8) {
+      const occupiedSlots = currentDeck.filter(Boolean).length;
+      if (occupiedSlots >= 8) {
         return currentDeck;
       }
 
       const cardAlreadyExists = currentDeck.some(
-        (currentCard) => currentCard.id === selectedCard.id
+        (currentCard) => currentCard?.id === selectedCard.id
       );
       if (cardAlreadyExists) {
         return currentDeck;
       }
 
-      return [...currentDeck, { ...selectedCard }];
+      const availableIndex =
+        selectedCard.rarity === "champion"
+          ? !currentDeck[1]
+            ? 1
+            : !currentDeck[2]
+              ? 2
+              : -1
+          : currentDeck.findIndex((currentCard) => !currentCard);
+      if (availableIndex === -1) {
+        return currentDeck;
+      }
+
+      const nextDeck = [...currentDeck];
+      nextDeck[availableIndex] = { ...selectedCard };
+
+      return nextDeck;
     });
-  };
+  }, []);
 
-  const removeCardFromDeck = (cardIndex: number) => {
-    setDeck((currentDeck) =>
-      currentDeck.filter((_, index) => index !== cardIndex)
-    );
-  };
+  const removeCardFromDeck = useCallback((cardIndex: number) => {
+    setDeck((currentDeck) => {
+      const nextDeck = [...currentDeck];
+      nextDeck[cardIndex] = undefined;
 
-  const rulePositionCard = (indexCard: number,item: Card) =>{
+      return nextDeck;
+    });
+  }, []);
+
+  const rulePositionCard = useCallback((indexCard: number,item: Card) =>{
     if(indexCard == 0){
         return item.iconUrls?.evolutionMedium || item.iconUrls?.medium 
     }
@@ -81,7 +103,7 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
         return item.iconUrls?.medium
     }
 
-  }
+  }, [])
 
   const handleDragStart = (event: DragStartEvent) => {
     const card = event.operation.source?.data?.card;
@@ -113,7 +135,7 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
       cardSelect,
       setCardSelect
     }),
-    [deck,cardSelect]
+    [addingCardInDeck, removeCardFromDeck, deck, rulePositionCard, cardSelect]
   );
 
   return createElement(

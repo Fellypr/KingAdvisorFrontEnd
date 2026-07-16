@@ -34,6 +34,7 @@ type CardItemProps = {
   card: Card;
   isSelected: boolean;
   isDeckFull: boolean;
+  championSlotsBusy: boolean;
   cardAlreadyInDeck: boolean;
   getImagemCard: (card: Card) => string;
   onSelect: (cardId: number) => void;
@@ -44,6 +45,7 @@ function CardItem({
   card,
   isSelected,
   isDeckFull,
+  championSlotsBusy,
   cardAlreadyInDeck,
   getImagemCard,
   onSelect,
@@ -113,7 +115,13 @@ function CardItem({
               : "-translate-y-2 scale-95"
           }`}
         >
-          {cardAlreadyInDeck ? "Ja no deck" : isDeckFull ? "Deck cheio" : "Adicionar"}
+          {cardAlreadyInDeck
+            ? "Ja no deck"
+            : championSlotsBusy
+              ? "Slots 1 e 2 ocupados"
+              : isDeckFull
+                ? "Deck cheio"
+                : "Adicionar"}
         </button>
       </div>
     </div>
@@ -125,6 +133,8 @@ export function Cards() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const {cards,getImagemCard} = useCards()
   const {addingCardInDeck, deck} = useCreateDeck();
+  const occupiedSlots = deck.filter(Boolean).length;
+  const championSlotsAvailable = !deck[1] || !deck[2];
 
   useEffect(() => {
     function handleClickFora(event: MouseEvent) {
@@ -143,7 +153,7 @@ export function Cards() {
     };
   }, []);
   const hiddenCardsUse = cards.filter(
-    (item) => !deck.some((x) => x.id === item.id)
+    (item) => !deck.some((x) => x?.id === item.id)
   );
   return (
     <div
@@ -151,15 +161,17 @@ export function Cards() {
       className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-8 w-full h-full flex-wrap overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-amber-300 [&::-webkit-scrollbar-track]:bg-gray-900 [&::-webkit-scrollbar-thumb:hover]:bg-amber-500 [&::-webkit-scrollbar-thumb]:rounded-2x gap-y-4"
     >
     {hiddenCardsUse.map((item) => {
-      const cardAlreadyInDeck = deck.some((card) => card.id === item.id);
-      const isDeckFull = deck.length >= 8;
+      const cardAlreadyInDeck = deck.some((card) => card?.id === item.id);
+      const isDeckFull = occupiedSlots >= 8;
+      const championSlotsBusy = item.rarity === "champion" && !championSlotsAvailable;
 
       return (
         <CardItem
           key={item.id} 
           card={item}
           isSelected={cartaSelecionada === item.id}
-          isDeckFull={isDeckFull}
+          isDeckFull={isDeckFull || championSlotsBusy}
+          championSlotsBusy={championSlotsBusy}
           cardAlreadyInDeck={cardAlreadyInDeck}
           getImagemCard={getImagemCard}
           onSelect={setCartaSelecionada}
