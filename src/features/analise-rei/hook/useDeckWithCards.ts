@@ -26,8 +26,8 @@ export const DECK_DROP_ID = "deck-drop-zone";
 type DeckContextData = {
   addingCardInDeck: (card?: Card, e?: MouseEvent) => void;
   removeCardFromDeck: (cardIndex: number) => void;
-  rulePositionCard: (index :number ,item: Card) => string | undefined;
-  changeCardSlot2:(item :Card) => void;
+  rulePositionCard: (index :number ,item: Card | null) => string | null | undefined;
+  changeCardSlot2:(item :Card | undefined) => void;
   changerCardSlot2: string;
   deck: Array<Card | undefined>;
   cardSelect: number | null;
@@ -93,7 +93,8 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const changeCardSlot2 = useCallback((item: Card) => {
+  const changeCardSlot2 = useCallback((item: Card | undefined) => {
+    if (!item) return;
     const existHero = !!item.iconUrls.heroMedium;
     const existEvolution = !!item.iconUrls.evolutionMedium;
 
@@ -104,7 +105,8 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
-  const rulePositionCard = useCallback((indexCard: number,item: Card) =>{
+  const rulePositionCard = useCallback((indexCard: number,item: Card | null) =>{
+    if(!item) return null;
     if(indexCard == 0){
         return item.iconUrls?.evolutionMedium || item.iconUrls?.medium 
     }

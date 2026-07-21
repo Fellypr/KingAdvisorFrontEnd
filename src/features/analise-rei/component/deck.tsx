@@ -4,7 +4,7 @@ import { AnalyzeDeckButton } from "@/features/analise-rei";
 import { useCreateDeck } from "@/features/analise-rei";
 import { useDroppable } from "@dnd-kit/react";
 import { DECK_DROP_ID } from "@/features/analise-rei/hook/useDeckWithCards";
-export default function DeckUsuario() {
+export  function DeckUsuario() {
   const box = Array.from({ length: 8 });
   const {
     deck,
@@ -15,7 +15,7 @@ export default function DeckUsuario() {
     changeCardSlot2,
     changerCardSlot2,
   } = useCreateDeck();
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const { ref: dropRef, isDropTarget } = useDroppable({
     id: DECK_DROP_ID,
     type: "deck",
@@ -23,10 +23,10 @@ export default function DeckUsuario() {
   });
 
   useEffect(() => {
-    function handleClickFora(event) {
+    function handleClickFora(event:MouseEvent) {
       if (
         containerRef?.current &&
-        !containerRef.current.contains(event.target)
+        !containerRef.current.contains(event.target as Node)
       ) {
         setCardSelect(null);
       }
@@ -62,7 +62,7 @@ export default function DeckUsuario() {
                   className={`rounded-xl flex flex-col justify-center items-center  cursor-pointer ${cardSelect == index ? "border-black/60 bg-black/30 border-2 rounded-lg  shadow-md shadow-black" : "bg-transparent"}`}
                 >
                   <img
-                    src={rulePositionCard(index, deck[index])}
+                    src={rulePositionCard(index, deck[index] ?? undefined)|| undefined} 
                     alt={deck[index].name}
                     className="h-full w-full rounded-lg object-cover"
                   />
