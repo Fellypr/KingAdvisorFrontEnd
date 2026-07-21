@@ -26,10 +26,12 @@ export const DECK_DROP_ID = "deck-drop-zone";
 type DeckContextData = {
   addingCardInDeck: (card?: Card, e?: MouseEvent) => void;
   removeCardFromDeck: (cardIndex: number) => void;
-  rulePositionCard: (index :number ,item: Card) => void
+  rulePositionCard: (index :number ,item: Card) => string | undefined;
+  changeCardSlot2:(item :Card) => void;
+  changerCardSlot2: string;
   deck: Array<Card | undefined>;
   cardSelect: number | null;
-  setCardSelect: Dispatch<SetStateAction<number | null>>
+  setCardSelect: Dispatch<SetStateAction<number | null>>;
 };
 
 const DeckContext = createContext<DeckContextData | null>(null);
@@ -40,6 +42,7 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
   );
   const [cardSelect , setCardSelect] = useState<number | null>(null);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
+  const [changerCardSlot2 , setChangerCardSlot2] = useState<string>("evolutionMedium");
 
   const addingCardInDeck = useCallback((card?: Card, e?: MouseEvent) => {
     e?.preventDefault();
@@ -90,6 +93,17 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const changeCardSlot2 = useCallback((item: Card) => {
+    const existHero = !!item.iconUrls.heroMedium;
+    const existEvolution = !!item.iconUrls.evolutionMedium;
+
+    if (!existHero || !existEvolution) return;
+
+    setChangerCardSlot2((cardNow) =>
+      cardNow === "evolutionMedium" ? "hero" : "evolutionMedium"
+    );
+  }, []);
+
   const rulePositionCard = useCallback((indexCard: number,item: Card) =>{
     if(indexCard == 0){
         return item.iconUrls?.evolutionMedium || item.iconUrls?.medium 
@@ -98,12 +112,16 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
         return item.iconUrls?.heroMedium || item.iconUrls?.medium 
     }
     else if(indexCard == 2){
-        return item.iconUrls?.evolutionMedium || item.iconUrls?.heroMedium || item.iconUrls?.medium 
+        if(changerCardSlot2 === "hero"){
+          return  item.iconUrls?.heroMedium 
+        }else if(changerCardSlot2 === "evolutionMedium"){
+          return  item.iconUrls?.evolutionMedium 
+        }
+        return item.iconUrls.medium || item.iconUrls.evolutionMedium || item.iconUrls.heroMedium
     }else{
         return item.iconUrls?.medium
     }
-
-  }, [])
+  }, [changerCardSlot2]);  
 
   const handleDragStart = (event: DragStartEvent) => {
     const card = event.operation.source?.data?.card;
@@ -133,9 +151,11 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
       deck,
       rulePositionCard,
       cardSelect,
-      setCardSelect
+      setCardSelect,
+      changeCardSlot2,
+      changerCardSlot2
     }),
-    [addingCardInDeck, removeCardFromDeck, deck, rulePositionCard, cardSelect]
+    [addingCardInDeck, removeCardFromDeck, deck, rulePositionCard, cardSelect, changeCardSlot2, changerCardSlot2]
   );
 
   return createElement(

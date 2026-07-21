@@ -13,6 +13,10 @@ module.exports = {
             "linear-gradient(146deg,rgba(46, 242, 177, 1) 0%, rgba(214, 182, 227, 1) 47%, rgba(245, 0, 224, 1) 81%)",
         "carta-campeao":
             "linear-gradient(146deg,rgba(255, 253, 148, 1) 0%, rgba(250, 204, 0, 1) 55%, rgba(196, 160, 0, 1) 87%)",
+        "mod-hero":
+          "linear-gradient(180deg,rgba(15, 234, 250, 1) 6%, rgba(255, 222, 10, 1) 87%);",
+        "mod-evolution":
+          " linear-gradient(180deg,rgba(15, 234, 250, 1) 18%, rgba(177, 10, 255, 1) 88%);",
       },
     },
   },

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect,useRef } from "react";
+import { useEffect, useRef } from "react";
 import { AnalyzeDeckButton } from "@/features/analise-rei";
 import { useCreateDeck } from "@/features/analise-rei";
 import { useDroppable } from "@dnd-kit/react";
@@ -12,6 +12,8 @@ export default function DeckUsuario() {
     rulePositionCard,
     cardSelect,
     setCardSelect,
+    changeCardSlot2,
+    changerCardSlot2,
   } = useCreateDeck();
   const containerRef = useRef(null);
   const { ref: dropRef, isDropTarget } = useDroppable({
@@ -21,22 +23,21 @@ export default function DeckUsuario() {
   });
 
   useEffect(() => {
-      function handleClickFora(event) {
-        if (
-          containerRef?.current &&
-          !containerRef.current.contains(event.target)
-        )
-          {
-          setCardSelect(null);
-        }
+    function handleClickFora(event) {
+      if (
+        containerRef?.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setCardSelect(null);
       }
-  
-      document.addEventListener('mousedown', handleClickFora);
-  
-      return () => {
-        document.removeEventListener('mousedown', handleClickFora);
-      };
-    }, []);
+    }
+
+    document.addEventListener("mousedown", handleClickFora);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickFora);
+    };
+  }, []);
 
   return (
     <div className="h-auto w-full ">
@@ -72,19 +73,47 @@ export default function DeckUsuario() {
                         : "max-h-0 opacity-0 mt-0"
                     }`}
                   >
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeCardFromDeck(index);
-                      }}
-                      className={`text-[12px] w-full p-1 pt-2 rounded-md transition-all duration-300 ease-out bg-red-500 cursor-pointer${
-                        cardSelect === index
-                          ? "translate-y-0 scale-100"
-                          : "-translate-y-2 scale-95"
-                      }`}
-                    >
-                      Remover
-                    </button>
+                    <div className="flex justify-center items-center gap-0.5">
+                      {index === 2 &&
+                        Object.values(deck[index].iconUrls).filter(
+                          (value) => value != null,
+                        ).length > 2 && (
+                          <button
+                            className={`w-full flex justify-center p-1 rounded-md cursor-pointer ${changerCardSlot2 === "hero" ? "bg-mod-evolution" : "bg-mod-hero"} border border-black`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              changeCardSlot2(deck[index]);
+                            }}
+                          >
+                            {changerCardSlot2 === "hero" ? (
+                              <img
+                                src="/images/cristal_de_evolucao.png"
+                                alt="campeao"
+                                className="w-6 h-5"
+                              />
+                            ) : (
+                              <img
+                                src="/images/cristal_campeao.png"
+                                alt="campeao"
+                                className="w-6 h-5"
+                              />
+                            )}
+                          </button>
+                        )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeCardFromDeck(index);
+                        }}
+                        className={`text-[12px] w-full p-1 pt-2 rounded-md transition-all duration-300 ease-out bg-red-500 cursor-pointer border border-black ${
+                          cardSelect === index
+                            ? "translate-y-0 scale-100"
+                            : "-translate-y-2 scale-95"
+                        }`}
+                      >
+                        Remover
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : index === 0 ? (
