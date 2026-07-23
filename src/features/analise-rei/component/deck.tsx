@@ -1,15 +1,13 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { AnalyzeDeckButton } from "@/features/analise-rei";
-import { useCreateDeck ,useRecommendation} from "@/features/analise-rei";
+import { useCreateDeck } from "@/features/analise-rei";
 import { useDroppable } from "@dnd-kit/react";
 import { DECK_DROP_ID } from "@/features/analise-rei/hook/useDeckWithCards";
-import { Card } from "../types/cardsTypes";
+
 export  function DeckUsuario() {
   const box = Array.from({ length: 8 });
   const {
     deck,
-    setDeck,
     removeCardFromDeck,
     rulePositionCard,
     cardSelect,
@@ -17,11 +15,7 @@ export  function DeckUsuario() {
     changeCardSlot2,
     changerCardSlot2,
   } = useCreateDeck();
-  const {
-    postDeckForRecommendation,
-    loading,
-    error,
-  } = useRecommendation()
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { ref: dropRef, isDropTarget } = useDroppable({
     id: DECK_DROP_ID,
@@ -61,7 +55,7 @@ export  function DeckUsuario() {
           {box.map((_, index) => (
             <div
               key={index}
-              className={`relative h-[80px] w-[60px] sm:h-[140px] sm:w-[100px] md:h-[140px] md:w-[100px]  flex justify-center items-center ${deck[index] ? "bg-transparent" : "border-black/60 bg-black/30 border-2 rounded-lg  shadow-md shadow-black"}`}
+              className={`relative h-[80px] w-[60px] sm:h-[140px] sm:w-[100px] md:h-[120px] md:w-[90px]  flex justify-center items-center ${deck[index] ? "bg-transparent" : "border-black/60 bg-black/30 border-2 rounded-lg  shadow-md shadow-black"}`}
             >
               {deck[index] ? (
                 <div
@@ -145,15 +139,7 @@ export  function DeckUsuario() {
             </div>
           ))}
         </div>
-        <div className="w-full flex aling-center justify-center mt-5">
-          <AnalyzeDeckButton onClick={()=>{
-            const deckFiltrado = deck.filter((card)=>card != null)
-            postDeckForRecommendation(deckFiltrado as Card[])
-          }} loading={loading} />
-          <button onClick={() => setDeck(Array.from({ length: 8 }, () => undefined))}>
-            limpa
-          </button>
-        </div>
+
       </div>
     </div>
   );

@@ -5,4 +5,5 @@ export {useCreateDeck} from "../analise-rei/hook/useDeckWithCards"
 export {CreateDeckProvider} from "../analise-rei/hook/useDeckWithCards"
 export {DeckUsuario} from "../analise-rei/component/deck"
 export {useRecommendation} from "../analise-rei/hook/useRecommendation"
-
+export {KingAnalyzing} from "../analise-rei/component/king-analyzing"
+export {DeckActions} from "../analise-rei/component/deck-actions"
