@@ -64,6 +64,7 @@ type DeckContextData = {
   changerCardSlot2: string;
   deck: Array<Card | undefined>;
   cardSelect: number | null;
+  setDeck:Dispatch<SetStateAction<Array<Card|undefined>>>
   setCardSelect: Dispatch<SetStateAction<number | null>>;
 };
 
@@ -201,7 +202,6 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
     try {
       window.localStorage.setItem(DECK_STORAGE_KEY, JSON.stringify(deck));
       console.log("assim estar o deck:", deck);
-      console.log("e o change:", changerCardSlot2);
     } catch {}
   }, [deck, changerCardSlot2]);
 
@@ -210,6 +210,7 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
       addingCardInDeck,
       removeCardFromDeck,
       deck,
+      setDeck,
       rulePositionCard,
       cardSelect,
       setCardSelect,

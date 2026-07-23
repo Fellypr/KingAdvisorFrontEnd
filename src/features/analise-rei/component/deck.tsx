@@ -9,6 +9,7 @@ export  function DeckUsuario() {
   const box = Array.from({ length: 8 });
   const {
     deck,
+    setDeck,
     removeCardFromDeck,
     rulePositionCard,
     cardSelect,
@@ -146,12 +147,12 @@ export  function DeckUsuario() {
         </div>
         <div className="w-full flex aling-center justify-center mt-5">
           <AnalyzeDeckButton onClick={()=>{
-
             const deckFiltrado = deck.filter((card)=>card != null)
-
-            console.log("enviando esse deck....",deckFiltrado)
             postDeckForRecommendation(deckFiltrado as Card[])
           }} loading={loading} />
+          <button onClick={() => setDeck(Array.from({ length: 8 }, () => undefined))}>
+            limpa
+          </button>
         </div>
       </div>
     </div>
