@@ -1,14 +1,10 @@
-import type { ButtonHTMLAttributes } from "react";
-
-interface AnalyzeDeckButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
-  loading?: boolean;
-}
+import { AnalyzeDeckButtonProps } from "@/features/analise-rei/types/cardsTypes"
 
 export function AnalyzeDeckButton({
-  loading = false,
+  loading,
   disabled,
   className = "",
+  onClick,
   ...props
 }: AnalyzeDeckButtonProps) {
   const isDisabled = disabled || loading;
@@ -32,6 +28,7 @@ export function AnalyzeDeckButton({
         cursor-pointer
         ${className}
       `}
+      onClick={onClick}
       {...props}
     >
       <span

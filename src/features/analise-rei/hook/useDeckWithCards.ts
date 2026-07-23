@@ -22,12 +22,45 @@ import {
 import type { Card } from "../types/cardsTypes";
 
 export const DECK_DROP_ID = "deck-drop-zone";
+const DECK_STORAGE_KEY = "king-advisor:analise-rei:deck";
+
+function loadDeckFromStorage() {
+  if (typeof window === "undefined") {
+    return Array.from({ length: 8 }, () => undefined) as Array<
+      Card | undefined
+    >;
+  }
+
+  try {
+    const storedDeck = window.localStorage.getItem(DECK_STORAGE_KEY);
+
+    if (!storedDeck) {
+      return Array.from({ length: 8 }, () => undefined) as Array<
+        Card | undefined
+      >;
+    }
+
+    const parsedDeck = JSON.parse(storedDeck) as Array<Card | null>;
+
+    return Array.from(
+      { length: 8 },
+      (_, index) => parsedDeck?.[index] ?? undefined,
+    );
+  } catch {
+    return Array.from({ length: 8 }, () => undefined) as Array<
+      Card | undefined
+    >;
+  }
+}
 
 type DeckContextData = {
   addingCardInDeck: (card?: Card, e?: MouseEvent) => void;
   removeCardFromDeck: (cardIndex: number) => void;
-  rulePositionCard: (index :number ,item: Card | null) => string | null | undefined;
-  changeCardSlot2:(item :Card | undefined) => void;
+  rulePositionCard: (
+    index: number,
+    item: Card | null,
+  ) => string | null | undefined;
+  changeCardSlot2: (item: Card | undefined) => void;
   changerCardSlot2: string;
   deck: Array<Card | undefined>;
   cardSelect: number | null;
@@ -38,11 +71,12 @@ const DeckContext = createContext<DeckContextData | null>(null);
 
 export function CreateDeckProvider({ children }: { children: ReactNode }) {
   const [deck, setDeck] = useState<Array<Card | undefined>>(
-    Array.from({ length: 8 }, () => undefined)
+    Array.from({ length: 8 }, () => undefined),
   );
-  const [cardSelect , setCardSelect] = useState<number | null>(null);
+  const [cardSelect, setCardSelect] = useState<number | null>(null);
   const [activeCard, setActiveCard] = useState<Card | null>(null);
-  const [changerCardSlot2 , setChangerCardSlot2] = useState<string>("evolutionMedium");
+  const [changerCardSlot2, setChangerCardSlot2] =
+    useState<string>("evolutionMedium");
 
   const addingCardInDeck = useCallback((card?: Card, e?: MouseEvent) => {
     e?.preventDefault();
@@ -59,7 +93,7 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
       }
 
       const cardAlreadyExists = currentDeck.some(
-        (currentCard) => currentCard?.id === selectedCard.id
+        (currentCard) => currentCard?.id === selectedCard.id,
       );
       if (cardAlreadyExists) {
         return currentDeck;
@@ -100,30 +134,42 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
 
     if (!existHero || !existEvolution) return;
 
+    if (!existEvolution) {
+      setChangerCardSlot2("hero");
+    } else if (!existHero) {
+      setChangerCardSlot2("evolutionMedium");
+    } else if (!existEvolution && !existHero) {
+      setChangerCardSlot2("medium");
+    }
+
     setChangerCardSlot2((cardNow) =>
-      cardNow === "evolutionMedium" ? "hero" : "evolutionMedium"
+      cardNow === "evolutionMedium" ? "hero" : "evolutionMedium",
     );
   }, []);
 
-  const rulePositionCard = useCallback((indexCard: number,item: Card | null) =>{
-    if(!item) return null;
-    if(indexCard == 0){
-        return item.iconUrls?.evolutionMedium || item.iconUrls?.medium 
-    }
-    else if(indexCard == 1){
-        return item.iconUrls?.heroMedium || item.iconUrls?.medium 
-    }
-    else if(indexCard == 2){
-        if(changerCardSlot2 === "hero"){
-          return  item.iconUrls?.heroMedium 
-        }else if(changerCardSlot2 === "evolutionMedium"){
-          return  item.iconUrls?.evolutionMedium 
+  const rulePositionCard = useCallback(
+    (indexCard: number, item: Card | null) => {
+      if (!item) return null;
+      if (indexCard == 0) {
+        return item.iconUrls?.evolutionMedium || item.iconUrls?.medium;
+      } else if (indexCard == 1) {
+        return item.iconUrls?.heroMedium || item.iconUrls?.medium;
+      } else if (indexCard == 2) {
+        if (changerCardSlot2 === "hero") {
+          return item.iconUrls?.heroMedium || item.iconUrls?.medium;
+        } else if (changerCardSlot2 === "evolutionMedium") {
+          return (
+            item.iconUrls?.evolutionMedium ||
+            item.iconUrls?.heroMedium ||
+            item.iconUrls?.medium
+          );
         }
-        return item.iconUrls.medium || item.iconUrls.evolutionMedium || item.iconUrls.heroMedium
-    }else{
-        return item.iconUrls?.medium
-    }
-  }, [changerCardSlot2]);  
+      } else {
+        return item.iconUrls?.medium;
+      }
+    },
+    [changerCardSlot2],
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     const card = event.operation.source?.data?.card;
@@ -143,8 +189,21 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    console.log("por enquanto o deck estar assim", deck);
-  }, [deck]);
+    const savedDeck = loadDeckFromStorage();
+    const timeoutId = window.setTimeout(() => {
+      setDeck(savedDeck);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(DECK_STORAGE_KEY, JSON.stringify(deck));
+      console.log("assim estar o deck:", deck);
+      console.log("e o change:", changerCardSlot2);
+    } catch {}
+  }, [deck, changerCardSlot2]);
 
   const value = useMemo(
     () => ({
@@ -155,9 +214,17 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
       cardSelect,
       setCardSelect,
       changeCardSlot2,
-      changerCardSlot2
+      changerCardSlot2,
     }),
-    [addingCardInDeck, removeCardFromDeck, deck, rulePositionCard, cardSelect, changeCardSlot2, changerCardSlot2]
+    [
+      addingCardInDeck,
+      removeCardFromDeck,
+      deck,
+      rulePositionCard,
+      cardSelect,
+      changeCardSlot2,
+      changerCardSlot2,
+    ],
   );
 
   return createElement(
@@ -176,9 +243,9 @@ export function CreateDeckProvider({ children }: { children: ReactNode }) {
               alt: activeCard.name,
               className: "h-30 w-20 rounded-lg object-cover shadow-2xl",
             })
-          : null
-      )
-    )
+          : null,
+      ),
+    ),
   );
 }
 
@@ -186,7 +253,9 @@ export function useCreateDeck() {
   const context = useContext(DeckContext);
 
   if (!context) {
-    throw new Error("useCreateDeck precisa ser usado dentro de CreateDeckProvider");
+    throw new Error(
+      "useCreateDeck precisa ser usado dentro de CreateDeckProvider",
+    );
   }
 
   return context;

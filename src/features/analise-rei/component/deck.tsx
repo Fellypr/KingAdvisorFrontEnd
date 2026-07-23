@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { AnalyzeDeckButton } from "@/features/analise-rei";
-import { useCreateDeck } from "@/features/analise-rei";
+import { useCreateDeck ,useRecommendation} from "@/features/analise-rei";
 import { useDroppable } from "@dnd-kit/react";
 import { DECK_DROP_ID } from "@/features/analise-rei/hook/useDeckWithCards";
+import { Card } from "../types/cardsTypes";
 export  function DeckUsuario() {
   const box = Array.from({ length: 8 });
   const {
@@ -15,6 +16,11 @@ export  function DeckUsuario() {
     changeCardSlot2,
     changerCardSlot2,
   } = useCreateDeck();
+  const {
+    postDeckForRecommendation,
+    loading,
+    error,
+  } = useRecommendation()
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { ref: dropRef, isDropTarget } = useDroppable({
     id: DECK_DROP_ID,
@@ -139,7 +145,13 @@ export  function DeckUsuario() {
           ))}
         </div>
         <div className="w-full flex aling-center justify-center mt-5">
-          <AnalyzeDeckButton />
+          <AnalyzeDeckButton onClick={()=>{
+
+            const deckFiltrado = deck.filter((card)=>card != null)
+
+            console.log("enviando esse deck....",deckFiltrado)
+            postDeckForRecommendation(deckFiltrado as Card[])
+          }} loading={loading} />
         </div>
       </div>
     </div>

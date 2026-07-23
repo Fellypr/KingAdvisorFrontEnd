@@ -4,3 +4,5 @@ export {AnalyzeDeckButton} from "../analise-rei/component/button"
 export {useCreateDeck} from "../analise-rei/hook/useDeckWithCards"
 export {CreateDeckProvider} from "../analise-rei/hook/useDeckWithCards"
 export {DeckUsuario} from "../analise-rei/component/deck"
+export {useRecommendation} from "../analise-rei/hook/useRecommendation"
+
